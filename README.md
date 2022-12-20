@@ -3,7 +3,8 @@
 A circular progress countdown view.
 
 Preview:
-[preview.gif]
+
+![Screeshot](preview.gif)
 
 Usage:
 
