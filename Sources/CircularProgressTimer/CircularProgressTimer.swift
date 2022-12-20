@@ -118,7 +118,9 @@ struct ProgressBar: View {
   }
   
   private func completed() -> Bool {
-    isCompleted = progress() == 1
+    if progress() == 1 {
+      isCompleted = true
+    }
     return isCompleted
   }
   
