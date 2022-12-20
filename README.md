@@ -2,6 +2,9 @@
 
 A circular progress countdown view.
 
+Preview:
+[preview.gif]
+
 Usage:
 
 ```Swift
