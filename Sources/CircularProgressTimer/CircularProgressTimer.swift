@@ -225,13 +225,13 @@ public struct CPTCountdownView: View {
 @available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
 struct CPTCountdownView_Previews: PreviewProvider {
   static var previews: some View {
-    CPTCountdownView(min: 0, max: 30)
+    CPTCountdownView(min: 0, max: 80)
       .clockSize(CGSizeMake(300, 300))
-      .borderWidth(10)
-      .fontColor(.red)
-      .trackColor(.blue)
-      .barColor(.pink)
-      .completionColor(.purple)
+      .borderWidth(18)
+      .fontColor(.black)
+      .trackColor(.gray.opacity(0.2))
+      .barColor(.orange)
+      .completionColor(.green)
       .clockFont(.system(size: 70))
   }
 }
