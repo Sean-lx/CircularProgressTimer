@@ -3,9 +3,27 @@
 //
 
 import SwiftUI
+import Combine
+
+public extension View {
+  /// A backwards compatible wrapper for iOS 14 `onChange`
+  @ViewBuilder
+  func valueChanged<T: Equatable>
+  (value: T, onChange: @escaping (T) -> Void) -> some View {
+    if #available(iOS 14.0.0, macOS 11.0, tvOS 14.0, watchOS 7.0, macCatalyst 14.0, *)
+    {
+      self.onChange(of: value, perform: onChange)
+    } else {
+      self.onReceive(Just(value)) { (value) in
+        onChange(value)
+      }
+    }
+  }
+}
 
 @available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
 struct Clock: View {
+  private(set) var font: Font
   private(set) var fontColor: Color
   private(set) var counter: Int
   private(set) var countTo: Int
@@ -13,6 +31,7 @@ struct Clock: View {
   var body: some View {
     VStack {
       Text(counterToMinutes())
+        .font(font)
         .foregroundColor(fontColor)
     }
   }
@@ -61,11 +80,13 @@ struct ProgressBar: View {
   private(set) var completionColor: Color
   private(set) var counter: Int
   private(set) var countTo: Int
+  @Binding var isCompleted: Bool
   
   init(width: CGFloat = 250, height: CGFloat = 250,
        borderWidth: CGFloat,
        barColor: Color, completionColor: Color,
-       counter: Int, countTo: Int) {
+       counter: Int, countTo: Int,
+       isCompleted: Binding<Bool>) {
     self.width = width
     self.height = height
     self.counter = counter
@@ -73,6 +94,7 @@ struct ProgressBar: View {
     self.borderWidth = borderWidth
     self.barColor = barColor
     self.completionColor = completionColor
+    self._isCompleted = isCompleted
   }
   
   var body: some View {
@@ -96,7 +118,8 @@ struct ProgressBar: View {
   }
   
   private func completed() -> Bool {
-    return progress() == 1
+    isCompleted = progress() == 1
+    return isCompleted
   }
   
   private func progress() -> CGFloat {
@@ -112,24 +135,27 @@ public struct CPTCountdownView: View {
   @State private(set) var width: CGFloat
   @State private(set) var height: CGFloat
   @State private(set) var borderWidth: CGFloat
+  @State private(set) var font: Font
   @State private(set) var fontColor: Color
   @State private(set) var trackColor: Color
   @State private(set) var barColor: Color
   @State private(set) var completionColor: Color
   @State private(set) var min: Int
   private(set) var max: Int
+  @State private(set) var isCompleted: Bool = false
   
   public init(min: Int, max: Int,
-       width: CGFloat = 250, height: CGFloat = 250,
-       borderWidth: CGFloat = 5.0,
-       fontColor: Color = .black,
-       trackColor: Color = .black, barColor: Color = .orange,
-       completionColor: Color = .green) {
+              width: CGFloat = 250, height: CGFloat = 250,
+              borderWidth: CGFloat = 5.0,
+              font: Font = .system(size: 20), fontColor: Color = .black,
+              trackColor: Color = .black, barColor: Color = .orange,
+              completionColor: Color = .green) {
     self.width = width
     self.height = height
     self.min = min
     self.max = max
     self.borderWidth = borderWidth
+    self.font = font
     self.fontColor = fontColor
     self.trackColor = trackColor
     self.barColor = barColor
@@ -145,8 +171,8 @@ public struct CPTCountdownView: View {
         ProgressBar(width: width, height: height,
                     borderWidth: borderWidth,
                     barColor: barColor, completionColor: completionColor,
-                    counter: min, countTo: max)
-        Clock(fontColor: fontColor, counter: min, countTo: max)
+                    counter: min, countTo: max, isCompleted: $isCompleted)
+        Clock(font: font, fontColor: fontColor, counter: min, countTo: max)
       }
     }
     .onReceive(timer) { time in
@@ -161,7 +187,7 @@ public struct CPTCountdownView: View {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: width,
-                     fontColor: self.fontColor,
+                     font: self.font, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: self.barColor,
                      completionColor: self.completionColor)
   }
@@ -171,7 +197,7 @@ public struct CPTCountdownView: View {
     CPTCountdownView(min: self.min, max: self.max,
                      width: size.width, height: size.height,
                      borderWidth: self.borderWidth,
-                     fontColor: self.fontColor,
+                     font: self.font, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: self.barColor,
                      completionColor: self.completionColor)
   }
@@ -181,7 +207,7 @@ public struct CPTCountdownView: View {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
-                     fontColor: color,
+                     font: self.font, fontColor: color,
                      trackColor: self.trackColor, barColor: self.barColor,
                      completionColor: self.completionColor)
   }
@@ -191,7 +217,7 @@ public struct CPTCountdownView: View {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
-                     fontColor: self.fontColor,
+                     font: self.font, fontColor: self.fontColor,
                      trackColor: color, barColor: self.barColor,
                      completionColor: self.completionColor)
   }
@@ -201,7 +227,7 @@ public struct CPTCountdownView: View {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
-                     fontColor: self.fontColor,
+                     font: self.font, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: color,
                      completionColor: self.completionColor)
   }
@@ -211,14 +237,26 @@ public struct CPTCountdownView: View {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
-                     fontColor: self.fontColor,
+                     font: self.font, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: self.barColor,
                      completionColor: color)
   }
   
   @ViewBuilder
-  public func clockFont(_ font: Font) -> some View {
-    self.font(font)
+  public func clockFont(_ font: Font) -> CPTCountdownView {
+    CPTCountdownView(min: self.min, max: self.max,
+                     width: self.width, height: self.height,
+                     borderWidth: self.borderWidth,
+                     font: font, fontColor: self.fontColor,
+                     trackColor: self.trackColor, barColor: self.barColor,
+                     completionColor: self.completionColor)
+  }
+  
+  @ViewBuilder
+  public func onCompletion(_ handler: @escaping (Bool) -> ()) -> some View {
+    self.valueChanged(value: self.isCompleted) { completed in
+      handler(completed)
+    }
   }
 }
 
@@ -233,6 +271,11 @@ struct CPTCountdownView_Previews: PreviewProvider {
       .barColor(.orange)
       .completionColor(.green)
       .clockFont(.system(size: 70))
+      .onCompletion { completed in
+        if completed {
+          /// Handle countdown completion
+        }
+      }
   }
 }
 
