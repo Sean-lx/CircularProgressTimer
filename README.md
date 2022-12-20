@@ -4,7 +4,11 @@ A circular progress countdown view.
 
 Usage:
 
-CountdownView(counter: 0, countTo: 30)
+CPTCountdownView(min: 0, max: 30)
       .clockSize(CGSizeMake(300, 300))
-      .borderWidth(20)
+      .borderWidth(10)
+      .fontColor(.red)
+      .trackColor(.blue)
+      .barColor(.pink)
+      .completionColor(.purple)
       .clockFont(.system(size: 70))
