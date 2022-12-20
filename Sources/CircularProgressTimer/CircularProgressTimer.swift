@@ -3,128 +3,9 @@
 //
 
 import SwiftUI
-import Combine
-
-public extension View {
-  /// A backwards compatible wrapper for iOS 14 `onChange`
-  @ViewBuilder
-  func valueChanged<T: Equatable>
-  (value: T, onChange: @escaping (T) -> Void) -> some View {
-    if #available(iOS 14.0.0, macOS 11.0, tvOS 14.0, watchOS 7.0, macCatalyst 14.0, *)
-    {
-      self.onChange(of: value, perform: onChange)
-    } else {
-      self.onReceive(Just(value)) { (value) in
-        onChange(value)
-      }
-    }
-  }
-}
 
 @available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
-struct Clock: View {
-  private(set) var font: Font
-  private(set) var fontColor: Color
-  private(set) var counter: Int
-  private(set) var countTo: Int
-  
-  var body: some View {
-    VStack {
-      Text(counterToMinutes())
-        .font(font)
-        .foregroundColor(fontColor)
-    }
-  }
-  
-  private func counterToMinutes() -> String {
-    let currentTime = countTo - counter
-    let seconds = currentTime % 60
-    let minutes = Int(currentTime / 60)
-    
-    return "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
-  }
-}
-
-@available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
-struct ProgressTrack: View {
-  private(set) var width: CGFloat
-  private(set) var height: CGFloat
-  private(set) var borderWidth: CGFloat
-  private(set) var trackColor: Color
-  
-  init(width: CGFloat = 250, height: CGFloat = 250,
-       borderWidth: CGFloat,
-       trackColor: Color) {
-    self.width = width
-    self.height = height
-    self.borderWidth = borderWidth
-    self.trackColor = trackColor
-  }
-  
-  var body: some View {
-    Circle()
-      .fill(Color.clear)
-      .frame(width: width, height: height)
-      .overlay(
-        Circle().stroke(trackColor, lineWidth: borderWidth)
-      )
-  }
-}
-
-@available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
-struct ProgressBar: View {
-  private(set) var width: CGFloat
-  private(set) var height: CGFloat
-  private(set) var borderWidth: CGFloat
-  private(set) var barColor: Color
-  private(set) var completionColor: Color
-  private(set) var counter: Int
-  private(set) var countTo: Int
-  
-  init(width: CGFloat = 250, height: CGFloat = 250,
-       borderWidth: CGFloat,
-       barColor: Color, completionColor: Color,
-       counter: Int, countTo: Int) {
-    self.width = width
-    self.height = height
-    self.counter = counter
-    self.countTo = countTo
-    self.borderWidth = borderWidth
-    self.barColor = barColor
-    self.completionColor = completionColor
-  }
-  
-  var body: some View {
-    Circle()
-      .fill(Color.clear)
-      .frame(width: width, height: height)
-      .overlay(
-        Circle().trim(from:0, to: progress())
-          .stroke(
-            style: StrokeStyle(
-              lineWidth: borderWidth,
-              lineCap: .round,
-              lineJoin:.round
-            )
-          )
-          .foregroundColor(
-            (completed() ? completionColor : barColor)
-          )
-          .animation(.easeInOut(duration: 0.2), value: completed())
-      )
-  }
-  
-  private func completed() -> Bool {
-    return progress() == 1
-  }
-  
-  private func progress() -> CGFloat {
-    return (CGFloat(counter) / CGFloat(countTo))
-  }
-}
-
-@available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
-public struct CPTCountdownView: View {
+public struct CircularProgressTimer: View {
   private let timer = Timer
     .publish(every: 1, on: .main, in: .common)
     .autoconnect()
@@ -184,8 +65,8 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  public func borderWidth(_ width: CGFloat) -> CPTCountdownView {
-    CPTCountdownView(min: self.min, max: self.max,
+  public func borderWidth(_ width: CGFloat) -> CircularProgressTimer {
+    CircularProgressTimer(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: width,
                      font: self.font, fontColor: self.fontColor,
@@ -195,14 +76,14 @@ public struct CPTCountdownView: View {
   }
   
   
-  public func clockSize(_ size: CGSize) -> CPTCountdownView {
+  public func clockSize(_ size: CGSize) -> CircularProgressTimer {
     var newWidth = size.width
     var newHeight = size.height
     if newWidth != newHeight {
       newWidth = Swift.max(newWidth, newHeight)
       newHeight = Swift.max(newWidth, newHeight)
     }
-    return CPTCountdownView(min: self.min, max: self.max,
+    return CircularProgressTimer(min: self.min, max: self.max,
                             width: newWidth, height: newHeight,
                             borderWidth: self.borderWidth,
                             font: self.font, fontColor: self.fontColor,
@@ -212,8 +93,8 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  public func fontColor(_ color: Color) -> CPTCountdownView {
-    CPTCountdownView(min: self.min, max: self.max,
+  public func fontColor(_ color: Color) -> CircularProgressTimer {
+    CircularProgressTimer(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: color,
@@ -223,8 +104,8 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  public func trackColor(_ color: Color) -> CPTCountdownView {
-    CPTCountdownView(min: self.min, max: self.max,
+  public func trackColor(_ color: Color) -> CircularProgressTimer {
+    CircularProgressTimer(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: self.fontColor,
@@ -234,8 +115,8 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  public func barColor(_ color: Color) -> CPTCountdownView {
-    CPTCountdownView(min: self.min, max: self.max,
+  public func barColor(_ color: Color) -> CircularProgressTimer {
+    CircularProgressTimer(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: self.fontColor,
@@ -245,8 +126,8 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  public func completionColor(_ color: Color) -> CPTCountdownView {
-    CPTCountdownView(min: self.min, max: self.max,
+  public func completionColor(_ color: Color) -> CircularProgressTimer {
+    CircularProgressTimer(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: self.fontColor,
@@ -256,8 +137,8 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  public func clockFont(_ newFont: Font) -> CPTCountdownView {
-    CPTCountdownView(min: self.min, max: self.max,
+  public func clockFont(_ newFont: Font) -> CircularProgressTimer {
+    CircularProgressTimer(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
                      font: newFont, fontColor: self.fontColor,
@@ -268,9 +149,9 @@ public struct CPTCountdownView: View {
 }
 
 @available(iOS 13.0.0, macOS 10.15, tvOS 13.0, watchOS 6.0, macCatalyst 13.0, *)
-struct CPTCountdownView_Previews: PreviewProvider {
+struct CircularProgressTimer_Previews: PreviewProvider {
   static var previews: some View {
-    CPTCountdownView(min: 0, max: 80)
+    CircularProgressTimer(min: 0, max: 80)
       .clockSize(CGSizeMake(300, 300))
       .borderWidth(18)
       .fontColor(.black)

@@ -9,11 +9,14 @@ Preview:
 Usage:
 
 ```Swift
+import SwiftUI
+import CircularProgressTimer
+
 struct ContentView: View {
   @State var isCompleted: Bool = false
   
   var body: some View {
-    CPTCountdownView(min: 0, max: 10, isCompleted: $isCompleted)
+    CircularProgressTimer(min: 0, max: 10, isCompleted: $isCompleted)
       .clockSize(CGSizeMake(300, 300))
       .borderWidth(18)
       .fontColor(.black)
