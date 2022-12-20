@@ -80,13 +80,11 @@ struct ProgressBar: View {
   private(set) var completionColor: Color
   private(set) var counter: Int
   private(set) var countTo: Int
-  @Binding var isCompleted: Bool
   
   init(width: CGFloat = 250, height: CGFloat = 250,
        borderWidth: CGFloat,
        barColor: Color, completionColor: Color,
-       counter: Int, countTo: Int,
-       isCompleted: Binding<Bool>) {
+       counter: Int, countTo: Int) {
     self.width = width
     self.height = height
     self.counter = counter
@@ -94,7 +92,6 @@ struct ProgressBar: View {
     self.borderWidth = borderWidth
     self.barColor = barColor
     self.completionColor = completionColor
-    self._isCompleted = isCompleted
   }
   
   var body: some View {
@@ -118,10 +115,7 @@ struct ProgressBar: View {
   }
   
   private func completed() -> Bool {
-    if progress() == 1 {
-      isCompleted = true
-    }
-    return isCompleted
+    return progress() == 1
   }
   
   private func progress() -> CGFloat {
@@ -173,13 +167,16 @@ public struct CPTCountdownView: View {
         ProgressBar(width: width, height: height,
                     borderWidth: borderWidth,
                     barColor: barColor, completionColor: completionColor,
-                    counter: min, countTo: max, isCompleted: $isCompleted)
+                    counter: min, countTo: max)
         Clock(font: font, fontColor: fontColor, counter: min, countTo: max)
       }
     }
     .onReceive(timer) { time in
       if (self.min < self.max) {
         self.min += 1
+      }
+      if self.min == self.max {
+        self.isCompleted = true
       }
     }
   }
