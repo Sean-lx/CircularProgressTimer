@@ -119,7 +119,7 @@ public struct CPTCountdownView: View {
   @State private(set) var min: Int
   private(set) var max: Int
   
-  init(min: Int, max: Int,
+  public init(min: Int, max: Int,
        width: CGFloat = 250, height: CGFloat = 250,
        borderWidth: CGFloat = 5.0,
        fontColor: Color = .black,
@@ -157,7 +157,7 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  func borderWidth(_ width: CGFloat) -> CPTCountdownView {
+  public func borderWidth(_ width: CGFloat) -> CPTCountdownView {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: width,
@@ -167,7 +167,7 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  func clockSize(_ size: CGSize) -> CPTCountdownView {
+  public func clockSize(_ size: CGSize) -> CPTCountdownView {
     CPTCountdownView(min: self.min, max: self.max,
                      width: size.width, height: size.height,
                      borderWidth: self.borderWidth,
@@ -177,7 +177,7 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  func fontColor(_ color: Color) -> CPTCountdownView {
+  public func fontColor(_ color: Color) -> CPTCountdownView {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
@@ -187,7 +187,7 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  func trackColor(_ color: Color) -> CPTCountdownView {
+  public func trackColor(_ color: Color) -> CPTCountdownView {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
@@ -197,7 +197,7 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  func barColor(_ color: Color) -> CPTCountdownView {
+  public func barColor(_ color: Color) -> CPTCountdownView {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
@@ -207,7 +207,7 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  func completionColor(_ color: Color) -> CPTCountdownView {
+  public func completionColor(_ color: Color) -> CPTCountdownView {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
@@ -217,7 +217,7 @@ public struct CPTCountdownView: View {
   }
   
   @ViewBuilder
-  func clockFont(_ font: Font) -> some View {
+  public func clockFont(_ font: Font) -> some View {
     self.font(font)
   }
 }
