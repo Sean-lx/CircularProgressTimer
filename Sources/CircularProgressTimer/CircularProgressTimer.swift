@@ -138,14 +138,15 @@ public struct CPTCountdownView: View {
   @State private(set) var completionColor: Color
   @State private(set) var min: Int
   private(set) var max: Int
-  @State private(set) var isCompleted: Bool = false
+  @Binding private(set) var isCompleted: Bool
   
   public init(min: Int, max: Int,
               width: CGFloat = 250, height: CGFloat = 250,
               borderWidth: CGFloat = 5.0,
               font: Font = .system(size: 20), fontColor: Color = .black,
               trackColor: Color = .black, barColor: Color = .orange,
-              completionColor: Color = .green) {
+              completionColor: Color = .green,
+              isCompleted: Binding<Bool> = .constant(false)) {
     self.width = width
     self.height = height
     self.min = min
@@ -156,6 +157,7 @@ public struct CPTCountdownView: View {
     self.trackColor = trackColor
     self.barColor = barColor
     self.completionColor = completionColor
+    self._isCompleted = isCompleted
   }
   
   public var body: some View {
@@ -188,17 +190,25 @@ public struct CPTCountdownView: View {
                      borderWidth: width,
                      font: self.font, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: self.barColor,
-                     completionColor: self.completionColor)
+                     completionColor: self.completionColor,
+                     isCompleted: self.$isCompleted)
   }
   
-  @ViewBuilder
+  
   public func clockSize(_ size: CGSize) -> CPTCountdownView {
-    CPTCountdownView(min: self.min, max: self.max,
-                     width: size.width, height: size.height,
-                     borderWidth: self.borderWidth,
-                     font: self.font, fontColor: self.fontColor,
-                     trackColor: self.trackColor, barColor: self.barColor,
-                     completionColor: self.completionColor)
+    var newWidth = size.width
+    var newHeight = size.height
+    if newWidth != newHeight {
+      newWidth = Swift.max(newWidth, newHeight)
+      newHeight = Swift.max(newWidth, newHeight)
+    }
+    return CPTCountdownView(min: self.min, max: self.max,
+                            width: newWidth, height: newHeight,
+                            borderWidth: self.borderWidth,
+                            font: self.font, fontColor: self.fontColor,
+                            trackColor: self.trackColor, barColor: self.barColor,
+                            completionColor: self.completionColor,
+                            isCompleted: self.$isCompleted)
   }
   
   @ViewBuilder
@@ -208,7 +218,8 @@ public struct CPTCountdownView: View {
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: color,
                      trackColor: self.trackColor, barColor: self.barColor,
-                     completionColor: self.completionColor)
+                     completionColor: self.completionColor,
+                     isCompleted: self.$isCompleted)
   }
   
   @ViewBuilder
@@ -218,7 +229,8 @@ public struct CPTCountdownView: View {
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: self.fontColor,
                      trackColor: color, barColor: self.barColor,
-                     completionColor: self.completionColor)
+                     completionColor: self.completionColor,
+                     isCompleted: self.$isCompleted)
   }
   
   @ViewBuilder
@@ -228,7 +240,8 @@ public struct CPTCountdownView: View {
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: color,
-                     completionColor: self.completionColor)
+                     completionColor: self.completionColor,
+                     isCompleted: self.$isCompleted)
   }
   
   @ViewBuilder
@@ -238,24 +251,19 @@ public struct CPTCountdownView: View {
                      borderWidth: self.borderWidth,
                      font: self.font, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: self.barColor,
-                     completionColor: color)
+                     completionColor: color,
+                     isCompleted: self.$isCompleted)
   }
   
   @ViewBuilder
-  public func clockFont(_ font: Font) -> CPTCountdownView {
+  public func clockFont(_ newFont: Font) -> CPTCountdownView {
     CPTCountdownView(min: self.min, max: self.max,
                      width: self.width, height: self.height,
                      borderWidth: self.borderWidth,
-                     font: font, fontColor: self.fontColor,
+                     font: newFont, fontColor: self.fontColor,
                      trackColor: self.trackColor, barColor: self.barColor,
-                     completionColor: self.completionColor)
-  }
-  
-  @ViewBuilder
-  public func onCompletion(_ handler: @escaping (Bool) -> ()) -> some View {
-    self.valueChanged(value: self.isCompleted) { completed in
-      handler(completed)
-    }
+                     completionColor: self.completionColor,
+                     isCompleted: self.$isCompleted)
   }
 }
 
@@ -270,12 +278,5 @@ struct CPTCountdownView_Previews: PreviewProvider {
       .barColor(.orange)
       .completionColor(.green)
       .clockFont(.system(size: 70))
-      .onCompletion { completed in
-        if completed {
-          /// Handle countdown completion
-        }
-      }
   }
 }
-
-
