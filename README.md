@@ -4,6 +4,7 @@ A circular progress countdown view.
 
 Usage:
 
+```Swift
 CPTCountdownView(min: 0, max: 30)
       .clockSize(CGSizeMake(300, 300))
       .borderWidth(10)
@@ -11,4 +12,5 @@ CPTCountdownView(min: 0, max: 30)
       .trackColor(.blue)
       .barColor(.pink)
       .completionColor(.purple)
-      .clockFont(.system(size: 70))
+      .clockFont(.system(size: 70)) 
+```
