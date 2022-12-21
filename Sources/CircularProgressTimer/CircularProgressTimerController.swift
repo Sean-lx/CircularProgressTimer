@@ -28,7 +28,7 @@ public class CircularProgressTimerController: ObservableObject, CircularProgress
   @Published private var paused: Bool = true
   public let countTo: Int
   
-  init(timer: Timer.TimerPublisher,
+  public init(timer: Timer.TimerPublisher,
        counter: Int = 0, countTo: Int = 60) {
     self.timer = timer
     self.initialCounter = counter
