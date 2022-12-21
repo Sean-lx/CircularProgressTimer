@@ -19,8 +19,7 @@ public struct CircularProgressTimer: View {
   @State private(set) var completionColor: Color
   @Binding private(set) var isCompleted: Bool
   
-  public init(
-              width: CGFloat = 250, height: CGFloat = 250,
+  public init(width: CGFloat = 250, height: CGFloat = 250,
               borderWidth: CGFloat = 5.0,
               font: Font = .system(size: 20), fontColor: Color = .black,
               trackColor: Color = .black, barColor: Color = .orange,
@@ -60,15 +59,13 @@ public struct CircularProgressTimer: View {
   
   @ViewBuilder
   public func borderWidth(_ width: CGFloat) -> CircularProgressTimer {
-    CircularProgressTimer(
-                     width: self.width, height: self.height,
-                     borderWidth: width,
-                     font: self.font, fontColor: self.fontColor,
-                     trackColor: self.trackColor, barColor: self.barColor,
-                     completionColor: self.completionColor,
-                     isCompleted: self.$isCompleted)
+    CircularProgressTimer(width: self.width, height: self.height,
+                          borderWidth: width,
+                          font: self.font, fontColor: self.fontColor,
+                          trackColor: self.trackColor, barColor: self.barColor,
+                          completionColor: self.completionColor,
+                          isCompleted: self.$isCompleted)
   }
-  
   
   public func clockSize(_ size: CGSize) -> CircularProgressTimer {
     var newWidth = size.width
@@ -77,8 +74,7 @@ public struct CircularProgressTimer: View {
       newWidth = Swift.max(newWidth, newHeight)
       newHeight = Swift.max(newWidth, newHeight)
     }
-    return CircularProgressTimer(
-                                 width: newWidth, height: newHeight,
+    return CircularProgressTimer(width: newWidth, height: newHeight,
                                  borderWidth: self.borderWidth,
                                  font: self.font, fontColor: self.fontColor,
                                  trackColor: self.trackColor, barColor: self.barColor,
@@ -88,8 +84,7 @@ public struct CircularProgressTimer: View {
   
   @ViewBuilder
   public func fontColor(_ color: Color) -> CircularProgressTimer {
-    CircularProgressTimer(
-                          width: self.width, height: self.height,
+    CircularProgressTimer(width: self.width, height: self.height,
                           borderWidth: self.borderWidth,
                           font: self.font, fontColor: color,
                           trackColor: self.trackColor, barColor: self.barColor,
@@ -99,8 +94,7 @@ public struct CircularProgressTimer: View {
   
   @ViewBuilder
   public func trackColor(_ color: Color) -> CircularProgressTimer {
-    CircularProgressTimer(
-                          width: self.width, height: self.height,
+    CircularProgressTimer(width: self.width, height: self.height,
                           borderWidth: self.borderWidth,
                           font: self.font, fontColor: self.fontColor,
                           trackColor: color, barColor: self.barColor,
@@ -110,8 +104,7 @@ public struct CircularProgressTimer: View {
   
   @ViewBuilder
   public func barColor(_ color: Color) -> CircularProgressTimer {
-    CircularProgressTimer(
-                          width: self.width, height: self.height,
+    CircularProgressTimer(width: self.width, height: self.height,
                           borderWidth: self.borderWidth,
                           font: self.font, fontColor: self.fontColor,
                           trackColor: self.trackColor, barColor: color,
@@ -121,8 +114,7 @@ public struct CircularProgressTimer: View {
   
   @ViewBuilder
   public func completionColor(_ color: Color) -> CircularProgressTimer {
-    CircularProgressTimer(
-                          width: self.width, height: self.height,
+    CircularProgressTimer(width: self.width, height: self.height,
                           borderWidth: self.borderWidth,
                           font: self.font, fontColor: self.fontColor,
                           trackColor: self.trackColor, barColor: self.barColor,
@@ -132,8 +124,7 @@ public struct CircularProgressTimer: View {
   
   @ViewBuilder
   public func clockFont(_ newFont: Font) -> CircularProgressTimer {
-    CircularProgressTimer(
-                          width: self.width, height: self.height,
+    CircularProgressTimer(width: self.width, height: self.height,
                           borderWidth: self.borderWidth,
                           font: newFont, fontColor: self.fontColor,
                           trackColor: self.trackColor, barColor: self.barColor,
@@ -153,7 +144,7 @@ struct CircularProgressTimer_Previews: PreviewProvider {
       .barColor(.orange)
       .completionColor(.green)
       .clockFont(.system(size: 70))
-      .environmentObject(CircularProgressTimerController(timer: Timer
-        .publish(every: 1, on: .main, in: .common)))
+      .environmentObject(CircularProgressTimerController(
+        timer: Timer.publish(every: 1, on: .main, in: .common)))
   }
 }

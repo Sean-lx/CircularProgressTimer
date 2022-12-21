@@ -1,7 +1,4 @@
 //
-//  SwiftUIView.swift
-//  
-//
 //  Created by Sean Li on 2022/12/20.
 //
 

@@ -1,7 +1,4 @@
 //
-//  File.swift
-//  
-//
 //  Created by Sean Li on 2022/12/21.
 //
 
@@ -25,7 +22,7 @@ public class CircularProgressTimerController: ObservableObject, CircularProgress
   public let timer: Timer.TimerPublisher
   let initialCounter: Int
   @Published public private(set) var counter: Int
-  @Published private var paused: Bool = true
+  @Published public private(set) var paused: Bool = true
   public let countTo: Int
   
   public init(timer: Timer.TimerPublisher,
@@ -38,14 +35,14 @@ public class CircularProgressTimerController: ObservableObject, CircularProgress
   }
   
   deinit {
-    timerSubscription?.cancel()
-    timerSubscription = nil
+    cancel()
   }
   
   private func setupSubscriptions() {
     timerSubscription = timer
       .autoconnect()
       .combineLatest($paused)
+      .debounce(for: .seconds(0.9), scheduler: DispatchQueue.main)
       .sink(receiveValue: { [unowned self] (_, isPaused) in
         guard !isPaused else { return }
         guard counter < countTo else {
