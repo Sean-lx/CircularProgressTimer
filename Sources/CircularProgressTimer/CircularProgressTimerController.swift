@@ -47,10 +47,11 @@ public class CircularProgressTimerController: ObservableObject, CircularProgress
       .autoconnect()
       .combineLatest($paused)
       .sink(receiveValue: { [unowned self] (_, isPaused) in
+        guard !isPaused else { return }
         guard counter < countTo else {
           return
         }
-        if !isPaused { counter += 1 }
+        counter += 1
       })
   }
   

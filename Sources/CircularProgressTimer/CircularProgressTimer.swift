@@ -52,7 +52,7 @@ public struct CircularProgressTimer: View {
       }
     }
     .onReceive(controller.$counter) { newCounter in
-      if newCounter == controller.countTo {
+      if newCounter >= controller.countTo {
         self.isCompleted = true
       }
     }
